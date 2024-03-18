@@ -1,0 +1,28 @@
+version: '3.4'
+
+services:
+  rabbitmq.tracking:
+    image: rabbitmq:3.13-management
+    hostname: "rabbitmq.tracking"
+    labels:
+      NAME: "rabbitmq.tracking"
+    ports:
+    - "5672:5672"
+    - "15672:15672"
+
+  pixelservice:
+    image: ${DOCKER_REGISTRY-}pixelservice
+    build:
+      context: .
+      dockerfile: PixelService/Dockerfile
+    depends_on:
+      - "rabbitmq.tracking"
+
+  storageservice:
+    image: ${DOCKER_REGISTRY-}storageservice
+    build:
+      context: .
+      dockerfile: StorageService/Dockerfile
+    depends_on:
+      - "rabbitmq.tracking"
+
